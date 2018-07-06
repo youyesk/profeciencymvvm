@@ -1,12 +1,14 @@
 package com.exercise.satheeshkumar_u.proficiencymvvm.news;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,7 @@ import com.exercise.satheeshkumar_u.proficiencymvvm.adapter.NewsListAdapter;
 import com.exercise.satheeshkumar_u.proficiencymvvm.data.model.ItemResponse;
 import com.exercise.satheeshkumar_u.proficiencymvvm.data.network.ApiClient;
 import com.exercise.satheeshkumar_u.proficiencymvvm.data.network.RetrofitApi;
-import com.exercise.satheeshkumar_u.proficiencymvvm.util.Utils;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.exercise.satheeshkumar_u.proficiencymvvm.viewmodel.ListViewModel;
 
 public class NewsListFragment extends Fragment {
 
@@ -33,16 +30,32 @@ public class NewsListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static NewsListFragment newInstance(String param1, String param2) {
-        NewsListFragment fragment = new NewsListFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final ListViewModel viewModel =
+                ViewModelProviders.of(this).get(ListViewModel.class);
+
+        observeViewModel(viewModel);
+    }
+
+    private void observeViewModel(ListViewModel viewModel) {
+        // Update the list when the data changes
+        viewModel.getProjectListObservable().observe(this, new Observer<ItemResponse>() {
+            @Override
+            public void onChanged(@Nullable ItemResponse response) {
+                if (response != null) {
+                    newsListAdapter = new NewsListAdapter(response.getNews(), getActivity());
+                    recyclerView.setAdapter(newsListAdapter);
+                }
+            }
+        });
     }
 
     @Override
@@ -57,39 +70,7 @@ public class NewsListFragment extends Fragment {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        callNewsApi();
         return view;
-    }
-
-    private void callNewsApi() {
-
-        Utils.showProgress(getActivity());
-
-        /**
-         GET List Resources
-         **/
-        Call<ItemResponse> call = apiInterface.getListResources();
-        call.enqueue(new Callback<ItemResponse>() {
-            @Override
-            public void onResponse(Call<ItemResponse> call, Response<ItemResponse> response) {
-
-
-                Log.d("TAG", response.code() + "");
-
-                String displayResponse = "";
-
-                ItemResponse resource = response.body();
-                newsListAdapter = new NewsListAdapter(resource.getNews(), getActivity());
-                recyclerView.setAdapter(newsListAdapter);
-//                responseText.setText(displayResponse);
-
-            }
-
-            @Override
-            public void onFailure(Call<ItemResponse> call, Throwable t) {
-                call.cancel();
-            }
-        });
     }
 
 
