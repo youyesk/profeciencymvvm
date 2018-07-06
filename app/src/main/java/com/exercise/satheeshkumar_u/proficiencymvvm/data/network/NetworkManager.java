@@ -21,8 +21,6 @@ public class NetworkManager {
 
     public LiveData<ItemResponse> callNewsApi(Context context) {
 
-        Utils.showProgress(context);
-
         final MutableLiveData<ItemResponse> liveDataResponse = new MutableLiveData<>();
 
         apiInterface = ApiClient.getClient().create(RetrofitApi.class);
@@ -36,7 +34,6 @@ public class NetworkManager {
 
                 ItemResponse resource = response.body();
                 liveDataResponse.setValue(resource);
-
             }
 
             @Override

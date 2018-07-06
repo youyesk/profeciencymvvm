@@ -8,18 +8,13 @@ import android.support.v7.widget.Toolbar;
 import com.exercise.satheeshkumar_u.proficiencymvvm.news.NewsListFragment;
 
 public class MainActivity extends AppCompatActivity {
-    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar = findViewById(R.id.toolbar);
         setUpFragment();
     }
 
-    public Toolbar getToolbar() {
-        return toolbar;
-    }
 
     private void setUpFragment() {
         NewsListFragment newFragment = new NewsListFragment();
@@ -27,4 +22,7 @@ public class MainActivity extends AppCompatActivity {
         ft.add(R.id.content_main, newFragment).commit();
     }
 
+    public void setActionBarTitle(){
+        ((AppCompatActivity)this).getSupportActionBar().setTitle("sub categories");
+    }
 }
