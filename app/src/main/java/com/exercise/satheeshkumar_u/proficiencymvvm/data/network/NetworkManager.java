@@ -16,7 +16,7 @@ public class NetworkManager {
         return new NetworkManager();
     }
 
-    public LiveData<ItemResponse> callNewsApi() {
+    public LiveData<ItemResponse> callInfoApi() {
 
         final MutableLiveData<ItemResponse> liveDataResponse = new MutableLiveData<>();
 

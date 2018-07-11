@@ -29,6 +29,7 @@ public class InformationListFragment extends Fragment implements SwipeRefreshLay
     private RecyclerView rvInfoList;
     private NewsListAdapter newsListAdapter;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    ListViewModel viewModel;
 
     public InformationListFragment() {
         // Required empty public constructor
@@ -47,18 +48,21 @@ public class InformationListFragment extends Fragment implements SwipeRefreshLay
     }
 
     private void refreshModel() {
-        if(getActivity()!=null)
-        if (Utils.isNetworkAvailable(getActivity())) {
-            Utils.showProgress(getActivity());
-            mSwipeRefreshLayout.setRefreshing(false);
-            final ListViewModel viewModel =
-                    ViewModelProviders.of(this).get(ListViewModel.class);
+        if (getActivity() != null)
+            if (Utils.isNetworkAvailable(getActivity())) {
+                Utils.showProgress(getActivity());
+                mSwipeRefreshLayout.setRefreshing(false);
+                if (viewModel == null)
+                    viewModel =
+                            ViewModelProviders.of(this).get(ListViewModel.class);
+                else
+                    viewModel.callApi();
 
-            observeViewModel(viewModel);
-        } else {
-            mSwipeRefreshLayout.setRefreshing(false);
-            Utils.showError(getResources().getString(R.string.no_internet), getActivity());
-        }
+                observeViewModel(viewModel);
+            } else {
+                mSwipeRefreshLayout.setRefreshing(false);
+                Utils.showError(getResources().getString(R.string.no_internet), getActivity());
+            }
     }
 
     private void observeViewModel(ListViewModel viewModel) {
@@ -67,9 +71,9 @@ public class InformationListFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onChanged(@Nullable ItemResponse response) {
                 Utils.dismissProgress();
-                if (response != null && getActivity()!=null) {
-                    ActionBar actionBar=((AppCompatActivity) getActivity()).getSupportActionBar();
-                    if(actionBar!=null){
+                if (response != null && getActivity() != null) {
+                    ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                    if (actionBar != null) {
                         actionBar.setTitle(response.getTitle());
                     }
                     newsListAdapter = new NewsListAdapter(response.getNews(), getActivity());
@@ -93,7 +97,7 @@ public class InformationListFragment extends Fragment implements SwipeRefreshLay
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
 
-        if(getActivity()!=null) {
+        if (getActivity() != null) {
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
             rvInfoList.setLayoutManager(mLayoutManager);
             rvInfoList.setItemAnimator(new DefaultItemAnimator());

@@ -14,7 +14,11 @@ public class ListViewModel extends AndroidViewModel {
 
     public ListViewModel(@NonNull Application application) {
         super(application);
-        this.projectListObservable = NetworkManager.getInstance().callNewsApi();
+        callApi();
+    }
+
+    public void callApi(){
+        this.projectListObservable = NetworkManager.getInstance().callInfoApi();
     }
 
     public LiveData<ItemResponse> getProjectListObservable() {
