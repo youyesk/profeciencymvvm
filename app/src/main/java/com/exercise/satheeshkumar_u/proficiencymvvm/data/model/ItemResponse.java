@@ -12,7 +12,7 @@ public class ItemResponse {
     private String title;
     @SerializedName("rows")
     @Expose
-    private List<News> news = null;
+    private List<Information> news = null;
 
     public String getTitle() {
         return title;
@@ -22,12 +22,8 @@ public class ItemResponse {
         this.title = title;
     }
 
-    public List<News> getNews() {
+    public List<Information> getNews() {
         return news;
-    }
-
-    public void setNews(List<News> news) {
-        this.news = news;
     }
 
 }

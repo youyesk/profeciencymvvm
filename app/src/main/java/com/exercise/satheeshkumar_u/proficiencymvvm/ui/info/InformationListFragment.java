@@ -1,12 +1,14 @@
-package com.exercise.satheeshkumar_u.proficiencymvvm.news;
+package com.exercise.satheeshkumar_u.proficiencymvvm.ui.info;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -16,22 +18,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.exercise.satheeshkumar_u.proficiencymvvm.MainActivity;
 import com.exercise.satheeshkumar_u.proficiencymvvm.R;
 import com.exercise.satheeshkumar_u.proficiencymvvm.adapter.NewsListAdapter;
 import com.exercise.satheeshkumar_u.proficiencymvvm.data.model.ItemResponse;
-import com.exercise.satheeshkumar_u.proficiencymvvm.data.network.ApiClient;
-import com.exercise.satheeshkumar_u.proficiencymvvm.data.network.RetrofitApi;
 import com.exercise.satheeshkumar_u.proficiencymvvm.util.Utils;
 import com.exercise.satheeshkumar_u.proficiencymvvm.viewmodel.ListViewModel;
 
-public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class InformationListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private RecyclerView recyclerView;
+    private RecyclerView rvInfoList;
     private NewsListAdapter newsListAdapter;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public NewsListFragment() {
+    public InformationListFragment() {
         // Required empty public constructor
     }
 
@@ -48,6 +47,7 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshModel() {
+        if(getActivity()!=null)
         if (Utils.isNetworkAvailable(getActivity())) {
             Utils.showProgress(getActivity());
             mSwipeRefreshLayout.setRefreshing(false);
@@ -67,21 +67,24 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
             @Override
             public void onChanged(@Nullable ItemResponse response) {
                 Utils.dismissProgress();
-                if (response != null) {
-                    ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(response.getTitle());
+                if (response != null && getActivity()!=null) {
+                    ActionBar actionBar=((AppCompatActivity) getActivity()).getSupportActionBar();
+                    if(actionBar!=null){
+                        actionBar.setTitle(response.getTitle());
+                    }
                     newsListAdapter = new NewsListAdapter(response.getNews(), getActivity());
-                    recyclerView.setAdapter(newsListAdapter);
+                    rvInfoList.setAdapter(newsListAdapter);
                 }
             }
         });
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_news_list, container, false);
-        recyclerView = view.findViewById(R.id.rvList);
+        View view = inflater.inflate(R.layout.fragment_info_list, container, false);
+        rvInfoList = view.findViewById(R.id.rvInfoList);
         // SwipeRefreshLayout
         mSwipeRefreshLayout = view.findViewById(R.id.swipe_container);
         mSwipeRefreshLayout.setOnRefreshListener(this);
@@ -90,10 +93,12 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
                 android.R.color.holo_orange_dark,
                 android.R.color.holo_blue_dark);
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+        if(getActivity()!=null) {
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+            rvInfoList.setLayoutManager(mLayoutManager);
+            rvInfoList.setItemAnimator(new DefaultItemAnimator());
+            rvInfoList.addItemDecoration(new DividerItemDecoration(rvInfoList.getContext(), DividerItemDecoration.VERTICAL));
+        }
         return view;
     }
 

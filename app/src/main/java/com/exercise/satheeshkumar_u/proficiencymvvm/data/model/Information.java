@@ -3,7 +3,7 @@ package com.exercise.satheeshkumar_u.proficiencymvvm.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class News {
+public class Information {
 
     @SerializedName("title")
     @Expose
@@ -13,7 +13,7 @@ public class News {
     private String description;
     @SerializedName("imageHref")
     @Expose
-    private Object imageHref;
+    private Object imageHref="";
 
     public String getTitle() {
         return title;
@@ -33,9 +33,5 @@ public class News {
 
     public Object getImageHref() {
         return imageHref;
-    }
-
-    public void setImageHref(Object imageHref) {
-        this.imageHref = imageHref;
     }
 }

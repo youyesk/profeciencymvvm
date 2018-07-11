@@ -5,17 +5,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+
+import com.exercise.satheeshkumar_u.proficiencymvvm.R;
 
 public class Utils {
 
-    public static ProgressDialog progressdialog;
+    private static ProgressDialog progressdialog;
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
@@ -25,13 +26,13 @@ public class Utils {
                 context);
 
         // set title
-        alertDialogBuilder.setTitle("Warning");
+        alertDialogBuilder.setTitle(R.string.warning_title);
 
         // set dialog message
         alertDialogBuilder
                 .setMessage(message)
                 .setCancelable(false)
-                .setNegativeButton("OK",new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.alert_ok,new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         dialog.cancel();
                     }
@@ -46,7 +47,7 @@ public class Utils {
 
     public static void showProgress(Context context) {
         progressdialog = new ProgressDialog(context);
-        progressdialog.setMessage("loading....");
+        progressdialog.setMessage(context.getString(R.string.progress_loading));
         progressdialog.show();
     }
 
